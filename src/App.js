@@ -71,7 +71,7 @@ const AuditApp = () => {
         { no: 5, question: 'Modèle lisible visuellement', response: '', commentaire: '' },
         { no: 6, question: 'Utilisation correcte des pools et lanes (participants)', response: '', commentaire: '' },
         { no: 7, question: 'Documentation BPMN intégrée', response: '', commentaire: '' },
-        { no: 8, question: 'ptimisation de la modélisation', response: '', commentaire: '' }
+        { no: 8, question: 'Optimisation de la modélisation', response: '', commentaire: '' }
 
       ]
     };
