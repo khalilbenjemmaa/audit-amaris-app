@@ -5,6 +5,7 @@ const AuditApp = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [editingComment, setEditingComment] = useState(null);
   const [currentAuditId, setCurrentAuditId] = useState(null);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'editor'
   
   // Store all audits
   const [allAudits, setAllAudits] = useState([
@@ -41,7 +42,7 @@ const AuditApp = () => {
   ]);
 
   // Current audit being edited
-  const [currentAudit, setCurrentAudit] = useState(allAudits[0]);
+  const [currentAudit, setCurrentAudit] = useState(null);
 
   // Calculate percentage of answered questions for any audit
   const calculateProgress = (auditItems) => {
@@ -63,18 +64,24 @@ const AuditApp = () => {
       date: new Date().toISOString().split('T')[0],
       status: 'En cours',
       items: [
-        { no: 1, question: '', response: '', commentaire: '' },
-        { no: 2, question: '', response: '', commentaire: '' },
-        { no: 3, question: '', response: '', commentaire: '' },
-        { no: 4, question: '', response: '', commentaire: '' },
-        { no: 5, question: '', response: '', commentaire: '' }
+        { no: 1, question: 'Nomenclature normalisée', response: '', commentaire: '' },
+        { no: 2, question: 'Utilisation des sous-processus', response: '', commentaire: '' },
+        { no: 3, question: 'Utilisation correcte des gateways', response: '', commentaire: '' },
+        { no: 4, question: 'Événements de début et fin', response: '', commentaire: '' },
+        { no: 5, question: 'Modèle lisible visuellement', response: '', commentaire: '' },
+        { no: 6, question: 'Utilisation correcte des pools et lanes (participants)', response: '', commentaire: '' },
+        { no: 7, question: 'Documentation BPMN intégrée', response: '', commentaire: '' },
+        { no: 8, question: 'ptimisation de la modélisation', response: '', commentaire: '' }
+
       ]
     };
+
     
     setAllAudits([...allAudits, newAudit]);
     setCurrentAudit(newAudit);
     setCurrentAuditId(newId);
     setActiveTab('audits');
+    setViewMode('editor');
     setSelectedRow(0);
   };
 
@@ -82,6 +89,7 @@ const AuditApp = () => {
   const selectAudit = (audit) => {
     setCurrentAudit(audit);
     setCurrentAuditId(audit.id);
+    setViewMode('editor');
     setSelectedRow(0);
   };
 
@@ -216,6 +224,11 @@ const AuditApp = () => {
       }
     } else if (tab === 'demarrer') {
       createNewAudit();
+    } else if (tab === 'audits') {
+      // Reset to list view when clicking on audits tab
+      setViewMode('list');
+      setCurrentAudit(null);
+      setCurrentAuditId(null);
     }
   };
 
@@ -230,15 +243,17 @@ const AuditApp = () => {
   const deleteAudit = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cet audit?')) {
       setAllAudits(allAudits.filter(audit => audit.id !== currentAudit.id));
-      if (allAudits.length > 1) {
-        const remainingAudits = allAudits.filter(audit => audit.id !== currentAudit.id);
-        setCurrentAudit(remainingAudits[0]);
-        setCurrentAuditId(remainingAudits[0].id);
-      } else {
-        setCurrentAudit(null);
-      }
+      setViewMode('list');
+      setCurrentAudit(null);
+      setCurrentAuditId(null);
       alert('Audit supprimé');
     }
+  };
+
+  const goBackToList = () => {
+    setViewMode('list');
+    setCurrentAudit(null);
+    setCurrentAuditId(null);
   };
 
   // Render audit list view
@@ -287,6 +302,7 @@ const AuditApp = () => {
     </div>
   );
 
+
   // Render audit editor view
   const renderAuditEditor = () => {
     if (!currentAudit) {
@@ -304,11 +320,8 @@ const AuditApp = () => {
     }
 
     return (
-      
       <div className="p-5 bg-white">
         {/* Audit Info Editor */}
-        <script src="https://cdn.tailwindcss.com"></script>
-
         <div className="mb-4 p-4 bg-gray-50 rounded">
           <div className="grid grid-cols-2 gap-4 mb-3">
             <div>
@@ -357,6 +370,7 @@ const AuditApp = () => {
                   <td className="p-3 font-medium">{item.no}</td>
                   <td className="p-3">
                     <input
+                      disabled
                       type="text"
                       value={item.question}
                       onChange={(e) => updateQuestion(index, e.target.value)}
@@ -490,7 +504,6 @@ const AuditApp = () => {
               <span className="text-xl">💬</span>
               <span className="text-sm">Commentaire</span>
             </button>
-     
           </div>
         </div>
       </div>
@@ -526,7 +539,7 @@ const AuditApp = () => {
       </div>
 
       {/* Audit Info Bar - Only show when editing an audit */}
-      {currentAudit && activeTab === 'audits' && (
+      {currentAudit && activeTab === 'audits' && viewMode === 'editor' && (
         <div className="bg-blue-500 text-white px-5 py-2 text-sm">
           {currentAudit.title} I Auditeur : {currentAudit.auditor} I Audité : {currentAudit.auditee || 'Non défini'} I
           Taux de conformités : {calculateProgress(currentAudit.items)}% I Statut : {currentAudit.status}
@@ -534,11 +547,11 @@ const AuditApp = () => {
       )}
 
       {/* Action Buttons - Only show when editing an audit */}
-      {currentAudit && activeTab === 'audits' && (
+      {currentAudit && activeTab === 'audits' && viewMode === 'editor' && (
         <div className="bg-gray-100 px-5 py-2 flex justify-center gap-3 border-b border-gray-300">
           <button 
             className="px-3 py-1 border border-gray-400 bg-white cursor-pointer rounded text-xs hover:bg-gray-50 transition-colors"
-            onClick={() => setActiveTab('audits')}
+            onClick={goBackToList}
           >
             ← Liste des audits
           </button>
@@ -564,7 +577,8 @@ const AuditApp = () => {
       )}
 
       {/* Main Content */}
-      {activeTab === 'audits' && currentAuditId ? renderAuditEditor() : 
+      {activeTab === 'audits' && viewMode === 'editor' ? renderAuditEditor() : 
+       activeTab === 'audits' && viewMode === 'list' ? renderAuditsList() : 
        activeTab === 'audits' ? renderAuditsList() : (
         <div className="p-5 bg-white text-center">
           <h3 className="text-xl text-gray-600">
