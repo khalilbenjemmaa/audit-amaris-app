@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/audit-amaris-app/static/css/main.a66e4dd1.css",
-    "main.js": "/audit-amaris-app/static/js/main.447a5168.js",
+    "main.js": "/audit-amaris-app/static/js/main.d76e817c.js",
     "static/js/453.783cad75.chunk.js": "/audit-amaris-app/static/js/453.783cad75.chunk.js",
     "index.html": "/audit-amaris-app/index.html",
     "main.a66e4dd1.css.map": "/audit-amaris-app/static/css/main.a66e4dd1.css.map",
-    "main.447a5168.js.map": "/audit-amaris-app/static/js/main.447a5168.js.map",
+    "main.d76e817c.js.map": "/audit-amaris-app/static/js/main.d76e817c.js.map",
     "453.783cad75.chunk.js.map": "/audit-amaris-app/static/js/453.783cad75.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a66e4dd1.css",
-    "static/js/main.447a5168.js"
+    "static/js/main.d76e817c.js"
   ]
 }
