@@ -130,7 +130,7 @@ const AuditApp = () => {
         </div>
         <div class="audit-info">
           <p><strong>Auditeur:</strong> ${currentAudit.auditor}</p>
-          <p><strong>Audité:</strong> ${currentAudit.auditee}</p>
+          <p><strong>Audité:</strong> AYOUB BEN KHEROUN</p>
           <p><strong>Date:</strong> ${new Date(currentAudit.date).toLocaleDateString('fr-FR')}</p>
           <p><strong>Taux de conformités:</strong> ${calculateProgress(currentAudit.items)}%</p>
         </div>
@@ -236,6 +236,9 @@ const AuditApp = () => {
     if (window.confirm('Êtes-vous sûr de vouloir terminer cet audit?')) {
       const updatedAudit = { ...currentAudit, status: 'Terminé' };
       updateCurrentAudit(updatedAudit);
+      setViewMode('list');
+      setCurrentAudit(null);
+      setCurrentAuditId(null);
       alert('Audit terminé avec succès!');
     }
   };
@@ -336,11 +339,12 @@ const AuditApp = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Audité</label>
               <input
+                disabled
                 type="text"
-                value={currentAudit.auditee}
+                value='Ayoub BEN KHIROUN'
                 onChange={(e) => updateAuditInfo('auditee', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:outline-none"
-                placeholder="Nom de l'entité auditée"
+              
               />
             </div>
           </div>
