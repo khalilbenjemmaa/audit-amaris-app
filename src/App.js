@@ -48,6 +48,29 @@ const AuditApp = () => {
     }
   ]);
   const [currentAudit, setCurrentAudit] = useState(null);
+  const departments = [
+    "DI FTTA",
+    "DI ZTD",
+    "DI CSG - TRANS FTTA",
+    "DI RAN4",
+    "DI FH",
+    "DI DEMONTAGE RADIO",
+    "DI VERCORS",
+    "DI_CROZON",
+    "VDR RADIO CZ",
+    "AMBI MOBILE CZ",
+    "AMBI MOBILE ZTD",
+    "VDR FH",
+    "RENO CZ",
+    "DEMONT ROUT TRAP"
+  ];
+  const domains = [
+    "Fixe",
+    "Transport",
+    "Mobile-Radio",
+    "Mobile-Trans",
+    "Transverse"
+  ]
 
   // ----------- LOGIN INTERFACE -----------
   const completeAuditSetup = () => {
@@ -161,10 +184,9 @@ const AuditApp = () => {
               value={setupData.auditee}
               onChange={e => setSetupData({ ...setupData, auditee: e.target.value })}
               className="w-full p-2 border rounded"
+              disabled
             >
-              <option value="">-- Sélectionnez l'audité--</option>
               <option value="Ayoub BEN KHIROUN">Ayoub BEN KHIROUN</option>
-              <option value="R&S PROJET X">R&S PROJET X</option>
             </select>
           </div>
           <div>
@@ -174,9 +196,10 @@ const AuditApp = () => {
               onChange={e => setSetupData({ ...setupData, type: e.target.value })}
               className="w-full p-2 border rounded"
             >
-              <option value="">-- Sélectionnez la domaine--</option>
-              <option value="Modélisation">Modélisation</option>
-              <option value="Technique">Technique</option>
+              <option value="">-- Sélectionnez le domaine--</option>
+              {domains.map(dom => (
+                <option key= {dom} value={dom}>{dom}</option>
+              ))}
             </select>
           </div>
           <div>
@@ -187,13 +210,14 @@ const AuditApp = () => {
               className="w-full p-2 border rounded"
             >
               <option value="">-- Sélectionnez le processus --</option>
-              <option value="IT">IT</option>
-              <option value="RH">RH</option>
+              {departments.map(dep => (
+                <option key={dep} value={dep}>{dep}</option>
+              ))}
             </select>
           </div>
           <div className="pt-4 text-center">
             <button
-              disabled={!setupData.auditee || !setupData.type || !setupData.department}
+              disabled={ !setupData.type || !setupData.department}
               onClick={completeAuditSetup}
               className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
             >
@@ -262,10 +286,10 @@ const AuditApp = () => {
   };
 
   // ----------- PRINTING -----------
- const printAudit = () => {
-  const audit = currentAudit;
+  const printAudit = () => {
+    const audit = currentAudit;
 
-  const printTable = (title, items) => `
+    const printTable = (title, items) => `
     <h3>${title}</h3>
     <table>
       <thead>
@@ -284,7 +308,7 @@ const AuditApp = () => {
     </table>
   `;
 
-  const printContent = `
+    const printContent = `
     <!DOCTYPE html>
     <html>
     <head>
@@ -417,10 +441,10 @@ const AuditApp = () => {
     </html>
   `;
 
-  const printWindow = window.open('', '_blank');
-  printWindow.document.write(printContent);
-  printWindow.document.close();
-};
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+  };
 
 
 
@@ -539,8 +563,8 @@ const AuditApp = () => {
                   type="text"
                   value={item.question}
                   className={`w-full p-2 border rounded transition-colors ${selectedRow.table === tableKey && selectedRow.index === idx
-                      ? 'bg-white bg-opacity-20 border-white border-opacity-50 text-white placeholder-gray-200'
-                      : 'border-gray-300 text-gray-700 focus:border-blue-500 focus:outline-none'
+                    ? 'bg-white bg-opacity-20 border-white border-opacity-50 text-white placeholder-gray-200'
+                    : 'border-gray-300 text-gray-700 focus:border-blue-500 focus:outline-none'
                     }`}
                   onClick={e => e.stopPropagation()}
                 />
@@ -568,8 +592,8 @@ const AuditApp = () => {
                     onKeyPress={e => { if (e.key === 'Enter') setEditingComment({ table: null, index: null }); }}
                     placeholder="Tapez votre commentaire ici..."
                     className={`w-full p-2 border rounded transition-colors ${selectedRow.table === tableKey && selectedRow.index === idx
-                        ? 'bg-white bg-opacity-20 border-white border-opacity-50 text-white placeholder-gray-200'
-                        : 'border-gray-300 text-gray-700 focus:border-blue-500 focus:outline-none'
+                      ? 'bg-white bg-opacity-20 border-white border-opacity-50 text-white placeholder-gray-200'
+                      : 'border-gray-300 text-gray-700 focus:border-blue-500 focus:outline-none'
                       }`}
                     autoFocus
                     onClick={e => e.stopPropagation()}
@@ -673,12 +697,12 @@ const AuditApp = () => {
             <button
               className={`flex flex-col items-center gap-1 p-3 border border-yellow-500 bg-white cursor-pointer rounded text-yellow-600 transition-all hover:-translate-y-1 hover:shadow-lg ${selectedRow.index === null ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
-              onClick={() => setResponse('NC')}
+              onClick={() => setResponse('NOT OK')}
               disabled={selectedRow.index === null}
               title="Non conforme"
             >
-              <span className="text-xl">⚠️</span>
-              <span className="text-sm">NC</span>
+              <span className="text-xl">👎</span>
+              <span className="text-sm">NOT OK</span>
             </button>
             <button
               className={`flex flex-col items-center gap-1 p-3 border border-gray-500 bg-white cursor-pointer rounded text-gray-600 transition-all hover:-translate-y-1 hover:shadow-lg ${selectedRow.index === null ? 'opacity-50 cursor-not-allowed' : ''
@@ -730,6 +754,7 @@ const AuditApp = () => {
                 if (tab === 'quiter') {
                   if (window.confirm('Êtes-vous sûr de vouloir quitter?')) {
                     setLoggedIn(false);
+                    setActiveTab('audits')
                   }
                 } else if (tab === 'demarrer') {
                   createNewAudit();
