@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import imageAmaris from './assets/image-amaris.png'; 
+import imageBouyeges from './assets/image-bouygues.png'; 
+
 
 const AuditApp = () => {
   // ----------- AUTH STATE -----------
@@ -6,6 +9,8 @@ const AuditApp = () => {
   const [loginData, setLoginData] = useState({ login: '', password: '' });
 
   // ----------- MAIN APP STATE -----------
+  const [setupMode, setSetupMode] = useState(false);
+  const [setupData, setSetupData] = useState({ auditee: '', type: '', department: '' });
   const [activeTab, setActiveTab] = useState('audits');
   const [selectedRow, setSelectedRow] = useState({ table: 'model', index: null }); // Table: 'model' or 'tech'
   const [editingComment, setEditingComment] = useState({ table: null, index: null });
@@ -45,66 +50,9 @@ const AuditApp = () => {
   const [currentAudit, setCurrentAudit] = useState(null);
 
   // ----------- LOGIN INTERFACE -----------
-  if (!loggedIn) {
-    return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-blue-100">
-        <div className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-sm">
-          <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">Connexion AuditApp</h2>
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              setLoggedIn(true);
-            }}
-          >
-            <div className="mb-4">
-              <label className="block text-sm text-gray-700 mb-1">Login</label>
-              <input
-                className="w-full p-2 border border-gray-300 rounded"
-                type="text"
-                autoComplete="username"
-                value={loginData.login}
-                onChange={e => setLoginData(d => ({ ...d, login: e.target.value }))}
-                placeholder="Nom d'utilisateur"
-                required
-              />
-            </div>
-            <div className="mb-6">
-              <label className="block text-sm text-gray-700 mb-1">Mot de passe</label>
-              <input
-                className="w-full p-2 border border-gray-300 rounded"
-                type="password"
-                autoComplete="current-password"
-                value={loginData.password}
-                onChange={e => setLoginData(d => ({ ...d, password: e.target.value }))}
-                placeholder="Mot de passe"
-                required
-              />
-            </div>
-            <button
-              className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition"
-              type="submit"
-            >
-              Se connecter
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
-  // ----------- PROGRESS CALC -----------
-  const calculateProgress = (auditItems, auditItems2) => {
-    const totalQuestions = auditItems.length + auditItems2.length;
-    console.log(totalQuestions,"totalQuest");
-    
-    const OK_Response = auditItems.filter(item => item.response && item.response === 'OK').length;
-    return totalQuestions > 0 ? Math.round((OK_Response / totalQuestions) * 100) : 0;
-  };
-
-  // ----------- AUDIT CRUD -----------
-  const createNewAudit = () => {
-    const newId = Math.max(...allAudits.map(a => a.id), 0) + 1;
-    const newAudit = {
+  const completeAuditSetup = () => {
+  const newId = Math.max(...allAudits.map(a => a.id), 0) + 1;
+   const newAudit = {
       id: newId,
       title: `AUDIT ${String(newId).padStart(5, '0')}`,
       auditor: 'MOHAMED ALI FRADI',
@@ -133,13 +81,143 @@ const AuditApp = () => {
      
       ],
     };
-    setAllAudits([...allAudits, newAudit]);
-    setCurrentAudit(newAudit);
-    setCurrentAuditId(newId);
-    setActiveTab('audits');
-    setViewMode('editor');
-    setSelectedRow({ table: 'model', index: 0 });
+  setAllAudits([...allAudits, newAudit]);
+  setCurrentAudit(newAudit);
+  setCurrentAuditId(newId);
+  setActiveTab('audits');
+  setViewMode('editor');
+  setSelectedRow({ table: 'model', index: 0 });
+  setSetupMode(false);
+};
+  if (!loggedIn) {
+return (
+<div className="min-h-screen flex flex-col justify-center items-center bg-blue-100">
+  <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-sm relative overflow-hidden">
+    
+    {/* Top Logo */}
+    <div className="flex justify-center mb-6">
+      <img src={imageAmaris} alt="Logo Amaris" className="h-14 object-contain" />
+    </div>
+
+    <h2 className="text-2xl font-bold mb-6 text-blue-700 text-center">
+      AMARIS-AuditApp
+    </h2>
+
+    <form
+      onSubmit={e => {
+        e.preventDefault();
+        setLoggedIn(true);
+      }}
+    >
+      <div className="mb-4">
+        <label className="block text-sm text-gray-700 mb-1">Login</label>
+        <input
+          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          type="text"
+          autoComplete="username"
+          value={loginData.login}
+          onChange={e => setLoginData(d => ({ ...d, login: e.target.value }))}
+          placeholder="Nom d'utilisateur"
+          required
+        />
+      </div>
+      <div className="mb-6">
+        <label className="block text-sm text-gray-700 mb-1">Mot de passe</label>
+        <input
+          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          type="password"
+          autoComplete="current-password"
+          value={loginData.password}
+          onChange={e => setLoginData(d => ({ ...d, password: e.target.value }))}
+          placeholder="Mot de passe"
+          required
+        />
+      </div>
+      <button
+        className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-700 transition duration-200"
+        type="submit"
+      >
+        Se connecter
+      </button>
+    </form>
+
+    {/* Bottom Logo */}
+    <div className="flex justify-center mt-8">
+      <img src={imageBouyeges} alt="Logo Bouygues" className="h-12 object-contain" />
+    </div>
+  </div>
+</div>
+
+);
+
+  } else if (setupMode) {
+    return (
+      <div className="p-10 max-w-xl mx-auto">
+        <h2 className="text-xl font-bold mb-6 text-center text-blue-700">Initialiser un Nouvel Audit</h2>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Audité</label>
+            <select
+              value={setupData.auditee}
+              onChange={e => setSetupData({ ...setupData, auditee: e.target.value })}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">-- Sélectionnez l'audité--</option>
+              <option value="Ayoub BEN KHIROUN">Ayoub BEN KHIROUN</option>
+              <option value="R&S PROJET X">R&S PROJET X</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Domaine </label>
+            <select
+              value={setupData.type}
+              onChange={e => setSetupData({ ...setupData, type: e.target.value })}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">-- Sélectionnez la domaine--</option>
+              <option value="Modélisation">Modélisation</option>
+              <option value="Technique">Technique</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Processus</label>
+            <select
+              value={setupData.department}
+              onChange={e => setSetupData({ ...setupData, department: e.target.value })}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">-- Sélectionnez le processus --</option>
+              <option value="IT">IT</option>
+              <option value="RH">RH</option>
+            </select>
+          </div>
+          <div className="pt-4 text-center">
+            <button
+              disabled={!setupData.auditee || !setupData.type || !setupData.department}
+              onClick={completeAuditSetup}
+              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+              Continuer
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ----------- PROGRESS CALC -----------
+  const calculateProgress = (auditItems, auditItems2) => {
+    const totalQuestions = auditItems.length + auditItems2.length;
+    console.log(totalQuestions,"totalQuest");
+    
+    const OK_Response = auditItems.filter(item => item.response && item.response === 'OK').length;
+    return totalQuestions > 0 ? Math.round((OK_Response / totalQuestions) * 100) : 0;
   };
+
+  // ----------- AUDIT CRUD -----------
+const createNewAudit = () => {
+  setSetupMode(true);
+};
 
   const selectAudit = (audit) => {
     setCurrentAudit(audit);
