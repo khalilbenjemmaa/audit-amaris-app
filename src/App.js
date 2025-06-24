@@ -198,7 +198,7 @@ const AuditApp = () => {
             >
               <option value="">-- Sélectionnez le domaine--</option>
               {domains.map(dom => (
-                <option key= {dom} value={dom}>{dom}</option>
+                <option key={dom} value={dom}>{dom}</option>
               ))}
             </select>
           </div>
@@ -217,7 +217,7 @@ const AuditApp = () => {
           </div>
           <div className="pt-4 text-center">
             <button
-              disabled={ !setupData.type || !setupData.department}
+              disabled={!setupData.type || !setupData.department}
               onClick={completeAuditSetup}
               className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
             >
@@ -422,7 +422,7 @@ const AuditApp = () => {
 
       <div class="audit-info">
         <p><strong>Auditeur:</strong> ${audit.auditor}</p>
-        <p><strong>Audité:</strong> ${audit.auditee || 'Non défini'}</p>
+        <p><strong>Audité:</strong> ${audit.auditee || 'Ayoub Ben Khiroun'}</p>
         <p><strong>Date:</strong> ${new Date(audit.date).toLocaleDateString('fr-FR')}</p>
         <p><strong>Taux de conformités:</strong> ${calculateProgress(audit.items, audit.technical)}%</p>
       </div>
@@ -735,26 +735,39 @@ const AuditApp = () => {
   return (
     <div className="font-sans bg-gray-100 min-h-screen">
       {/* Header */}
-      <div className="bg-gray-200 flex items-center justify-center px-3 py-1 border-b border-gray-300">
-        <div className="text-blue-700 font-bold flex items-center gap-2">
+      <div className="bg-gray-200 relative px-3 py-1 border-b border-gray-300 h-10 flex items-center">
+        {/* Centered Name and Icon */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 text-blue-700 font-bold flex items-center gap-2">
           MOHAMED ALI FRADI <span>👤</span>
+        </div>
+
+        {/* Right Logo */}
+        <div className="absolute right-3">
+          <img src={imageBouyeges} alt="Bouygues Logo" className="h-6" />
         </div>
       </div>
 
+
+
       {/* Navigation Bar */}
-      <div className="bg-blue-700 flex justify-center text-white sticky top-0 z-30">
+      <div className="bg-blue-700 flex justify-between items-center text-white sticky top-0 z-30 px-4">
+        {/* Left Logo */}
+        <div className="flex items-center">
+          <img src={imageAmaris} alt="Amaris Logo" className="h-8 mr-4" />
+        </div>
+
+        {/* Navigation Tabs */}
         <div className="flex">
           {['quiter', 'demarrer', 'audits', 'actions', 'planning', 'reporting'].map((tab) => (
             <div
               key={tab}
-              className={`px-5 py-3 cursor-pointer border-r border-blue-800 transition-colors hover:bg-blue-800 ${activeTab === tab ? 'bg-blue-800' : ''
-                }`}
+              className={`px-5 py-3 cursor-pointer border-r border-blue-800 transition-colors hover:bg-blue-800 ${activeTab === tab ? 'bg-blue-800' : ''}`}
               onClick={() => {
                 setActiveTab(tab);
                 if (tab === 'quiter') {
                   if (window.confirm('Êtes-vous sûr de vouloir quitter?')) {
                     setLoggedIn(false);
-                    setActiveTab('audits')
+                    setActiveTab('audits');
                   }
                 } else if (tab === 'demarrer') {
                   createNewAudit();
@@ -771,13 +784,21 @@ const AuditApp = () => {
             </div>
           ))}
         </div>
+
+        <div className="flex items-center">
+        </div>
       </div>
+
 
       {/* Audit Info Bar */}
       {currentAudit && activeTab === 'audits' && viewMode === 'editor' && (
-        <div className="bg-blue-500 text-white px-5 py-2 text-sm">
-          {currentAudit.title} | Auditeur : {currentAudit.auditor} | Audité : {currentAudit.auditee || 'Non défini'} | Taux de conformités : {calculateProgress(currentAudit.items, currentAudit.technical)}% | Statut : {currentAudit.status}
+        <div className="bg-blue-500 text-white px-5 py-2 text-sm flex items-center justify-between">
+          <div>
+            {currentAudit.title} | Auditeur : {currentAudit.auditor} | Audité : {currentAudit.auditee || 'Non défini'} | Taux de conformités : {calculateProgress(currentAudit.items, currentAudit.technical)}% | Statut : {currentAudit.status}
+          </div>
+          <img src={imageAmaris} alt="Logo Amaris" className="h-6 ml-4" />
         </div>
+
       )}
 
       {/* Action Buttons */}
